@@ -1,0 +1,27 @@
+{
+    "Uuid": "tms1",
+    "Nsq": {
+        "Producer": {
+            "Addr": "192.168.2.67:4150",
+            "Count": 1
+        },
+        "Consumer": {
+            "Addr": "192.168.2.67:4150",
+            "Topic": "tms",
+            "Channels": [
+                "auth_fb_ch",
+                "auth_fb_ch",
+                "auth_fb_ch",
+                "auth_fb_ch"
+            ]
+        }
+    },
+    "DB": {
+        "Host": "222.222.218.51",
+	"Port": "2732",
+	"User": "postgres",
+	"Passwd":"postgres",
+	"DbName":"cetcnav",
+	"NotifyTable":"t_charge_pile"
+    }
+}
