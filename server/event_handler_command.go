@@ -17,6 +17,9 @@ func ProcessNsq(message []byte) {
 		case Report.Command_CMT_REQ_LOGIN:
 			event_handler_rep_login(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
 			break
+		case Report.Command_CMT_REQ_SETTING:
+			event_handler_rep_setting(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
+			break
 		}
 	}
 }

@@ -22,6 +22,7 @@
 	"User": "postgres",
 	"Passwd":"postgres",
 	"DbName":"cetcnav",
-	"NotifyTable":"t_charge_pile"
+	"NotifyTable":"t_charging_pile",
+	"ListenPriceTable":"t_electricity_price"
     }
 }

@@ -24,6 +24,7 @@ func main() {
 	db_socket, e := db.NewDbSocket(configuration.DB)
 	checkError(e)
 	db_socket.LoadAll()
+	db_socket.LoadAllPrices()
 	// create server
 	server := server.NewServer(mq_socket, db_socket)
 	server.Start()

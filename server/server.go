@@ -23,12 +23,14 @@ func NewServer(nsq_socket *NsqSocket, db_socket *db.DbSocket) *Server {
 
 func (server *Server) Start() {
 	server.MQ.Start()
+	server.DB.Listen(conf.GetConf().DB.ListenPriceTable)
 	server.DB.Listen(conf.GetConf().DB.NotifyTable)
 	server.DB.WaitForNotification()
 }
 
 func (server *Server) Stop() {
 	server.MQ.Stop()
+	server.DB.Listener.UnlistenAll()
 	server.DB.Close()
 }
 

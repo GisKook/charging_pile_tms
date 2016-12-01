@@ -22,12 +22,13 @@ type NsqConfiguration struct {
 }
 
 type DBConfigure struct {
-	Host        string
-	Port        string
-	User        string
-	Passwd      string
-	DbName      string
-	NotifyTable string
+	Host             string
+	Port             string
+	User             string
+	Passwd           string
+	DbName           string
+	NotifyTable      string
+	ListenPriceTable string
 }
 
 type Configuration struct {

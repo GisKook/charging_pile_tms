@@ -1,6 +1,7 @@
 package charging_pile
 
 type ChargingPile struct {
+	StationID             uint64
 	TypeID                uint8
 	RatedPower            float32
 	ElectricCurrentType   uint8
@@ -9,4 +10,6 @@ type ChargingPile struct {
 	ElectricCurrentOutput uint32
 	GunNum                uint32
 	AmmeterNum            float32
+	InterfaceType         uint8
+	BaudRate              uint8
 }
