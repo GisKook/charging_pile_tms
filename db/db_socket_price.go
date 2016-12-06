@@ -82,7 +82,7 @@ func (db_socket *DbSocket) parse_payload_price(notify string) {
 
 }
 
-func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, *charging_pile.ChargingPrice) {
+func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, uint64, *charging_pile.ChargingPrice) {
 	values := strings.Split(payload, "^")
 	id, _ := strconv.ParseUint(values[1], 10, 64)
 	station_id, _ := strconv.ParseUint(values[2], 10, 64)
@@ -94,7 +94,7 @@ func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, *
 	end_time, _ := time.Parse(time.Stamp, end_time_string)
 	log.Println(start_time)
 
-	return station_id, &charging_pile.ChargingPrice{
+	return id, station_id, &charging_pile.ChargingPrice{
 		ID:              id,
 		Start_hour:      uint8(start_time.Hour()),
 		Start_min:       uint8(start_time.Minute()),
@@ -106,14 +106,30 @@ func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, *
 }
 
 func (db_socket *DbSocket) insert_price(payload string) {
-	tid, charging_price := db_socket.parse_payload_price_common(payload)
-	log.Println(db_socket.ChargingPrices[tid])
-	db_socket.ChargingPrices[tid] = append(db_socket.ChargingPrices[tid], charging_price)
-	log.Println(db_socket.ChargingPrices[tid])
+	_, station_id, charging_price := db_socket.parse_payload_price_common(payload)
+	log.Println(db_socket.ChargingPrices[station_id])
+	db_socket.ChargingPrices[station_id] = append(db_socket.ChargingPrices[station_id], charging_price)
+	log.Println(db_socket.ChargingPrices[station_id])
 }
 
 func (db_socket *DbSocket) del_price(payload string) {
+	id, station_id, _ := db_socket.parse_payload_price_common(payload)
+	for i, p := range db_socket.ChargingPrices[station_id] {
+		if p.ID == id {
+			db_socket.ChargingPrices[station_id][i] = db_socket.ChargingPrices[station_id][len(db_socket.ChargingPrices)-1]
+			db_socket.ChargingPrices[station_id][len(db_socket.ChargingPrices)-1] = nil
+			db_socket.ChargingPrices[station_id] = db_socket.ChargingPrices[station_id][:len(db_socket.ChargingPrices)-1]
+			return
+		}
+	}
 }
 
 func (db_socket *DbSocket) update_price(payload string) {
+	id, station_id, price := db_socket.parse_payload_price_common(payload)
+	for i, p := range db_socket.ChargingPrices[station_id] {
+		if p.ID == id {
+			db_socket.ChargingPrices[station_id][i] = price
+			return
+		}
+	}
 }
