@@ -5,9 +5,12 @@ import (
 	"log"
 )
 
+const SQL_WIFI_AND_PASSWD string = "SELECT w.ssid, w.password FROM t_wifi w INNER JOIN t_charge_pile p on w.charge_pile_id=p.id WHERE p.cpid=$1"
+
 func (db_socket *DbSocket) GetWifiAndPasswd(cpid uint64) []byte {
 	//cpid_string := strconv.FormatUint(cpid, 10)
-	rows, err := db_socket.Db.Query("SELECT ssid, password FROM t_wifi WHERE charge_pile_id=$1", cpid)
+	rows, err := db_socket.Db.Query(SQL_WIFI_AND_PASSWD, cpid)
+	log.Println(cpid)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,6 +26,8 @@ func (db_socket *DbSocket) GetWifiAndPasswd(cpid uint64) []byte {
 		}
 		wifi = GetStringValue(sql_wifi, "")
 		passwd = GetStringValue(sql_passwd, "")
+		log.Println(wifi)
+		log.Println(passwd)
 	}
 	//	if err := rows.Err(); err != nil {
 	//		log.Fatal(err)
