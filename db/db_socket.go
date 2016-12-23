@@ -46,7 +46,7 @@ func NewDbSocket(db_config *conf.DBConfigure) (*DbSocket, error) {
 }
 
 func (db_socket *DbSocket) LoadAll() error {
-	st, err := db_socket.Db.Prepare("select cpid, station_id, terminal_type_id, rated_power, electric_current_type, voltage_input, voltage_output, electric_current_output, gun_number, ammeter_number,interface_type, baud_rate from t_charge_pile")
+	st, err := db_socket.Db.Prepare("select cpid, station_id, terminal_type_id, rated_power, electric_current_type, voltage_input, voltage_output, electric_current_output, gun_number, ammeter_number,interface_type, baud_rate ,id from t_charge_pile")
 
 	if err != nil {
 		return err
@@ -71,6 +71,7 @@ func (db_socket *DbSocket) LoadAll() error {
 	var sql_ammeter_number sql.NullFloat64
 	var sql_interface_type sql.NullInt64
 	var sql_baud_rate sql.NullInt64
+	var sql_id sql.NullInt64
 
 	for r.Next() {
 		err = r.Scan(
@@ -86,6 +87,7 @@ func (db_socket *DbSocket) LoadAll() error {
 			&sql_ammeter_number,
 			&sql_interface_type,
 			&sql_baud_rate,
+			&sql_id,
 		)
 		charging_pile_id := GetStringValue(sql_charging_pile_id, "")
 		station_id := uint64(GetInt64Value(sql_station_id, 0))
@@ -99,6 +101,7 @@ func (db_socket *DbSocket) LoadAll() error {
 		ammeter_number := float32(GetFloat64Value(sql_ammeter_number, 0.0))
 		interface_type := uint8(GetInt64Value(sql_interface_type, 0))
 		baud_rate := uint8(GetInt64Value(sql_baud_rate, 0))
+		id := uint32(GetInt64Value(sql_id, 0))
 
 		if err != nil {
 			log.Println(err.Error())
@@ -107,6 +110,7 @@ func (db_socket *DbSocket) LoadAll() error {
 		}
 		cpid, _ := strconv.ParseUint(charging_pile_id, 10, 64)
 		db_socket.ChargePile[cpid] = &charging_pile.ChargingPile{
+			ID:                    id,
 			StationID:             station_id,
 			TypeID:                terminal_type_id,
 			RatedPower:            rated_power,
@@ -185,6 +189,7 @@ func (db_socket *DbSocket) CheckChargingPileID(cpid uint64) bool {
 
 func (db_socket *DbSocket) parse_payload(payload string) (uint64, *charging_pile.ChargingPile) {
 	values := strings.Split(payload, "^")
+	id, _ := strconv.ParseUint(values[1], 10, 32)
 	station_id, _ := strconv.ParseUint(values[2], 10, 64)
 	charging_pile_id, _ := strconv.ParseUint(values[11], 10, 64)
 	terminal_type_id, _ := strconv.ParseUint(values[3], 10, 8)
@@ -200,6 +205,7 @@ func (db_socket *DbSocket) parse_payload(payload string) (uint64, *charging_pile
 
 	log.Println(charging_pile_id)
 	return charging_pile_id, &charging_pile.ChargingPile{
+		ID:                    uint32(id),
 		StationID:             station_id,
 		TypeID:                uint8(terminal_type_id),
 		RatedPower:            float32(rated_power),

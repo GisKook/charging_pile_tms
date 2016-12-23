@@ -1,6 +1,7 @@
 package charging_pile
 
 type ChargingPile struct {
+	ID                    uint32
 	StationID             uint64
 	TypeID                uint8
 	RatedPower            float32
