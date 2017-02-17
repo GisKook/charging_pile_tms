@@ -46,7 +46,7 @@ func NewDbSocket(db_config *conf.DBConfigure) (*DbSocket, error) {
 }
 
 func (db_socket *DbSocket) LoadAll() error {
-	st, err := db_socket.Db.Prepare("select cpid, station_id, terminal_type_id, rated_power, electric_current_type, voltage_input, voltage_output, electric_current_output, gun_number, ammeter_number,interface_type, baud_rate ,id from t_charge_pile")
+	st, err := db_socket.Db.Prepare("select cpid, station_id, terminal_type_id, rated_power, electric_current_type, voltage_input, voltage_output, electric_current_output, gun_number, ammeter_number,interface_type, baud_rate ,id , auth_mode, lock_mode from t_charge_pile")
 
 	if err != nil {
 		return err
@@ -72,6 +72,8 @@ func (db_socket *DbSocket) LoadAll() error {
 	var sql_interface_type sql.NullInt64
 	var sql_baud_rate sql.NullInt64
 	var sql_id sql.NullInt64
+	var sql_auth_mode sql.NullInt64
+	var sql_lock_mode sql.NullInt64
 
 	for r.Next() {
 		err = r.Scan(
@@ -88,6 +90,8 @@ func (db_socket *DbSocket) LoadAll() error {
 			&sql_interface_type,
 			&sql_baud_rate,
 			&sql_id,
+			&sql_auth_mode,
+			&sql_lock_mode,
 		)
 		charging_pile_id := GetStringValue(sql_charging_pile_id, "")
 		station_id := uint64(GetInt64Value(sql_station_id, 0))
@@ -102,6 +106,8 @@ func (db_socket *DbSocket) LoadAll() error {
 		interface_type := uint8(GetInt64Value(sql_interface_type, 0))
 		baud_rate := uint8(GetInt64Value(sql_baud_rate, 0))
 		id := uint32(GetInt64Value(sql_id, 0))
+		auth_mode := uint8(GetInt64Value(sql_auth_mode, 0))
+		lock_mode := uint8(GetInt64Value(sql_lock_mode, 0))
 
 		if err != nil {
 			log.Println(err.Error())
@@ -122,6 +128,8 @@ func (db_socket *DbSocket) LoadAll() error {
 			AmmeterNum:            ammeter_number,
 			InterfaceType:         interface_type,
 			BaudRate:              baud_rate,
+			AuthMode:              auth_mode,
+			LockMode:              lock_mode,
 		}
 
 	}
@@ -202,6 +210,8 @@ func (db_socket *DbSocket) parse_payload(payload string) (uint64, *charging_pile
 	ammeter_number, _ := strconv.ParseFloat(values[10], 32)
 	interface_type, _ := strconv.ParseUint(values[13], 10, 8)
 	baud_rate, _ := strconv.ParseUint(values[14], 10, 8)
+	auth_mode, _ := strconv.ParseUint(values[15], 10, 8)
+	lock_mode, _ := strconv.ParseUint(values[16], 10, 8)
 
 	log.Println(charging_pile_id)
 	return charging_pile_id, &charging_pile.ChargingPile{
@@ -217,6 +227,8 @@ func (db_socket *DbSocket) parse_payload(payload string) (uint64, *charging_pile
 		AmmeterNum:            float32(ammeter_number),
 		InterfaceType:         uint8(interface_type),
 		BaudRate:              uint8(baud_rate),
+		AuthMode:              uint8(auth_mode),
+		LockMode:              uint8(lock_mode),
 	}
 }
 

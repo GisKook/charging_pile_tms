@@ -22,10 +22,6 @@ func ProcessNsq(message []byte) {
 			break
 		case Report.Command_CMT_REQ_PRICE:
 			event_handler_rep_price(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
-		case Report.Command_CMT_REQ_MODE:
-			event_handler_rep_mode(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
-		case Report.Command_CMT_REQ_MAX_CURRENT:
-			event_handler_rep_max_current(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
 		}
 	}
 }

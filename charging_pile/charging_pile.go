@@ -13,4 +13,6 @@ type ChargingPile struct {
 	AmmeterNum            float32
 	InterfaceType         uint8
 	BaudRate              uint8
+	AuthMode              uint8
+	LockMode              uint8
 }
