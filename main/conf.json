@@ -1,5 +1,5 @@
 {
-    "Uuid": "tms1",
+    "Uuid": "tms1_test",
     "Nsq": {
         "Producer": {
             "Addr": "192.168.2.67:4150",
@@ -7,7 +7,7 @@
         },
         "Consumer": {
             "Addr": "192.168.2.67:4150",
-            "Topic": "tms",
+            "Topic": "tms_test",
             "Channels": [
                 "auth_fb_ch",
                 "auth_fb_ch",
@@ -17,8 +17,8 @@
         }
     },
     "DB": {
-        "Host": "222.222.218.51",
-	"Port": "2732",
+        "Host": "192.168.2.121",
+	"Port": "5432",
 	"User": "postgres",
 	"Passwd":"postgres",
 	"DbName":"cetcnav",
