@@ -7,11 +7,13 @@ import (
 	"log"
 )
 
-func event_handler_rep_price(uuid string, tid uint64, serial uint32, param []*Report.Param) {
+func event_handler_rep_price(uuid string, tid uint64, station_id uint64, serial uint32, param []*Report.Param) {
 	log.Println("rep price")
 	var paras []*Report.Param
-	prices := GetServer().DB.ChargingPrices[tid]
+	prices := GetServer().DB.ChargingPrices[station_id]
+	log.Println(prices)
 	for _, price := range prices {
+		log.Println(*price)
 		paras = append(paras, &Report.Param{
 			Type:  Report.Param_UINT8,
 			Npara: uint64(price.Start_hour),

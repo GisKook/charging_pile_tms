@@ -63,7 +63,7 @@ func (db_socket *DbSocket) LoadAllPrices() error {
 			})
 	}
 
-	log.Println(db_socket.ChargePile)
+	log.Println(db_socket.ChargingPrices)
 
 	defer r.Close()
 

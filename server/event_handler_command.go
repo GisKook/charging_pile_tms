@@ -21,7 +21,7 @@ func ProcessNsq(message []byte) {
 			event_handler_rep_setting(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
 			break
 		case Report.Command_CMT_REQ_PRICE:
-			event_handler_rep_price(command.Uuid, command.Tid, command.SerialNumber, command.Paras)
+			event_handler_rep_price(command.Uuid, command.Tid, command.Paras[0].Npara, command.SerialNumber, command.Paras)
 		}
 	}
 }
