@@ -90,8 +90,8 @@ func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, u
 	end_time_string := values[5]
 	elec_unit_price, _ := strconv.ParseFloat(values[6], 32)
 	service_price, _ := strconv.ParseFloat(values[7], 32)
-	start_time, _ := time.Parse(time.Stamp, start_time_string)
-	end_time, _ := time.Parse(time.Stamp, end_time_string)
+	start_time, _ := time.Parse("15:04:05", start_time_string)
+	end_time, _ := time.Parse("15:04:05", end_time_string)
 	log.Println(start_time)
 
 	return id, station_id, &charging_pile.ChargingPrice{
