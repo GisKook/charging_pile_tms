@@ -121,10 +121,10 @@ func (db_socket *DbSocket) del_price(payload string) {
 	}()
 	id, station_id, _ := db_socket.parse_payload_price_common(payload)
 	for i, p := range db_socket.ChargingPrices[station_id] {
-		if p.ID == id && len(db_socket.ChargingPrices) > 0 {
-			db_socket.ChargingPrices[station_id][i] = db_socket.ChargingPrices[station_id][len(db_socket.ChargingPrices)-1]
-			db_socket.ChargingPrices[station_id][len(db_socket.ChargingPrices)-1] = nil
-			db_socket.ChargingPrices[station_id] = db_socket.ChargingPrices[station_id][:len(db_socket.ChargingPrices)-1]
+		if p.ID == id && len(db_socket.ChargingPrices[station_id]) > 0 {
+			db_socket.ChargingPrices[station_id][i] = db_socket.ChargingPrices[station_id][len(db_socket.ChargingPrices[station_id])-1]
+			db_socket.ChargingPrices[station_id][len(db_socket.ChargingPrices[station_id])-1] = nil
+			db_socket.ChargingPrices[station_id] = db_socket.ChargingPrices[station_id][:len(db_socket.ChargingPrices[station_id])-1]
 			return
 		}
 	}
