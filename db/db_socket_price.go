@@ -82,6 +82,17 @@ func (db_socket *DbSocket) parse_payload_price(notify string) {
 
 }
 
+func calc_price_x_100(price float64) uint16 {
+	calc_price := price * 1000
+	if uint16(calc_price)%10 > 5 {
+		calc_price = calc_price/10 + 1
+	} else {
+		calc_price = calc_price / 10
+	}
+
+	return uint16(calc_price)
+}
+
 func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, uint64, *charging_pile.ChargingPrice) {
 	values := strings.Split(payload, "^")
 	id, _ := strconv.ParseUint(values[1], 10, 64)
@@ -93,6 +104,11 @@ func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, u
 	start_time, _ := time.Parse("15:04:05", start_time_string)
 	end_time, _ := time.Parse("15:04:05", end_time_string)
 	log.Println(start_time)
+	_elec_unit_price := calc_price_x_100(elec_unit_price)
+	_service_price := calc_price_x_100(service_price)
+
+	log.Println(_elec_unit_price)
+	log.Println(_service_price)
 
 	return id, station_id, &charging_pile.ChargingPrice{
 		ID:              id,
@@ -100,8 +116,8 @@ func (db_socket *DbSocket) parse_payload_price_common(payload string) (uint64, u
 		Start_min:       uint8(start_time.Minute()),
 		End_hour:        uint8(end_time.Hour()),
 		End_min:         uint8(end_time.Minute()),
-		Elec_unit_price: uint16(elec_unit_price * 100),
-		Service_price:   uint16(service_price * 100),
+		Elec_unit_price: uint16(_elec_unit_price),
+		Service_price:   uint16(_service_price),
 	}
 }
 
@@ -132,7 +148,13 @@ func (db_socket *DbSocket) del_price(payload string) {
 
 func (db_socket *DbSocket) update_price(payload string) {
 	id, station_id, price := db_socket.parse_payload_price_common(payload)
+	log.Println("------")
+	log.Println(id)
+	log.Println(station_id)
+	log.Println(*price)
+	log.Println("------")
 	for i, p := range db_socket.ChargingPrices[station_id] {
+
 		if p.ID == id {
 			db_socket.ChargingPrices[station_id][i] = price
 			return
